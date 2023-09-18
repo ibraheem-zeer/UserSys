@@ -17,8 +17,8 @@ const dataSource = new DataSource({
         Role,
         Permission
     ],
-    synchronize: true,
-    logging: false
+    synchronize: true, // ask waleed
+    logging: false     // ask waleed
 });
 
 dataSource.initialize().then(() => {

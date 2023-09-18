@@ -6,9 +6,7 @@ export class Permission extends BaseEntity {
     @PrimaryGeneratedColumn('increment')
     id: string;
 
-    @Column({
-        unique: true
-    })
+    @Column({ unique: true })
     name: string;
 
     @ManyToMany(() => Role, role => role.permissions)

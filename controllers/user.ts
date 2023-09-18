@@ -9,15 +9,20 @@ import { In } from "typeorm";
 
 
 const insertUser = (payload: UserNS.User) => {
-    return dataSource.manager.transaction(async transaction => {
-        const role = await Role.findOneBy({ name: payload.role })
-        const newUser = User.create({
-            ...payload,
-            roles: [role] as Role[]
+    return dataSource.manager.transaction(
+        async transaction => {
+            const role = await Role.findOneBy({ name: payload.role })
+            // crete => build in function
+            // 1) create user 
+            // 2) select if user , editor or admin
+            const newUser = User.create({
+                ...payload,
+                roles: [role] as Role[]
+            });
+            await transaction.save(newUser);
         });
-        await transaction.save(newUser);
-    });
 }
+
 const inssertRole = async (payload: Role) => {
     try {
         const role = new Role()

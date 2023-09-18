@@ -15,10 +15,7 @@ export class Profile extends BaseEntity {
     @Column({ type: "date" })
     dateOfBirth: Date;
 
-    @Column()
-    name: string;
-
     @OneToOne(() => User, user => user.profile)
     @JoinColumn()
-    user: Partial<User>;
+    user: Partial<User>; // ask waleed
 }
