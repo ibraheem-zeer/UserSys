@@ -30,7 +30,6 @@ const inssertRole = async (payload: Role) => {
         role.permissions = await Permission.findBy({
             id: In(payload.permissions)
         })
-
         await role.save()
     } catch (error) {
         throw ("Something went wrong")
@@ -49,15 +48,14 @@ const insertPermission = async (payload: Permission) => {
 const login = async (email: string, password: string) => {
     try {
         const user = await User.findOneBy({ email });
-
         const passwordMatching = await bcrypt.compare(password, user?.password || '')
-
         if (user && passwordMatching) {
             const token = jwt.sign({
                 email: user.email,
-                userName: user.userName
+                userName: user.userName,
+                displayName: user.displayName
             }, process.env.SECRET_KEY || "", {
-                expiresIn: "30m"
+                expiresIn: "14d"
             })
 
             return token
@@ -79,4 +77,9 @@ const getRoles = () => {
     return roles
 }
 
-export { insertUser, login, getUsers, insertPermission, inssertRole, getRoles }
+const getPermission = () => {
+    const permissions = Permission.find()
+    return permissions
+}
+
+export { insertUser, login, getUsers, insertPermission, inssertRole, getRoles, getPermission }

@@ -1,27 +1,41 @@
 import express from 'express';
-import { insertUser, login, inssertRole, insertPermission, getRoles, getUsers } from '../controllers/user.js';
+import { insertUser, login, inssertRole, insertPermission, getRoles, getUsers, getPermission } from '../controllers/user.js';
 import { auth } from '../middleware/auth/auth.js';
 import { error } from 'console';
 
 const router = express.Router();
 
+// router.post('/', (req, res) => {
+//     insertUser(req.body).then(() => {
+//         res.status(201).send()
+//     }).catch(error => {
+//         console.error(error)
+//         res.status(500).send(error)
+//     })
+// })
+
 router.post('/', (req, res) => {
-    insertUser(req.body).then(() => {
-        res.status(201).send()
-    }).catch(error => {
-        console.error(error)
-        res.status(500).send(error)
-    })
+    const { email, password, userName, displayName, role } = req.body
+    if (email && password && userName && displayName && role) {
+        insertUser(req.body).then(() => {
+            res.status(201).send()
+        }).catch(error => {
+            console.error(error)
+            res.status(500).send(error)
+        })
+    } else {
+        res.status(400).send('complete all what you need ...')
+    }
 })
 
-router.post('/role', (req, res) => {
-    inssertRole(req.body).then((data) => {
-        res.status(201).send(data)
-    }).catch(err => {
-        console.error(err);
-        res.status(500).send(err);
-    });
+router.get('/', auth, (req, res, next) => {
+    getUsers().then(data => {
+        res.status(200).send(data)
+    }).catch(error => {
+        res.status(404).send(error)
+    })
 });
+
 
 router.post('/permission', (req, res) => {
     insertPermission(req.body).then((data) => {
@@ -31,6 +45,15 @@ router.post('/permission', (req, res) => {
         res.status(500).send(err);
     });
 });
+
+router.get('permission', auth, (req, res, next) => {
+    getPermission().then(data => {
+        res.status(200).send(data)
+    }).catch(err => {
+        console.error(err);
+        res.status(500).send("there are wrong permissions")
+    })
+})
 
 router.post('/login', (req, res) => {
     const email = req.body.email
@@ -53,12 +76,13 @@ router.get('/roles', auth, async (req, res, next) => {
     }
 })
 
-router.get('/', auth, (req, res, next) => {
-    getUsers().then(data => {
-        res.status(200).send(data)
-    }).catch(error => {
-        res.status(404).send(error)
-    })
+router.post('/role', (req, res) => {
+    inssertRole(req.body).then((data) => {
+        res.status(201).send(data)
+    }).catch(err => {
+        console.error(err);
+        res.status(500).send(err);
+    });
 });
 
-export default router;
+export default router

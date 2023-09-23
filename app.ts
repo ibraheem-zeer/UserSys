@@ -14,7 +14,7 @@ const PORT = 5000
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.use('/user', auth, usersRouter);
+app.use('/user', usersRouter);
 
 app.use((req, res, next) => {
     next(createError(404));

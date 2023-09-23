@@ -14,6 +14,9 @@ export class User extends BaseEntity {
     @Column({ nullable: false })
     email: string;
 
+    @Column({ length: 255, nullable: false })
+    displayName: string;
+
     @BeforeInsert()
     async hashPassword() {
         if (this.password) {
