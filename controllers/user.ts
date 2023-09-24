@@ -6,6 +6,7 @@ import bcrypt from 'bcrypt';
 import { Role } from "../db/entities/Role.js";
 import { Permission } from "../db/entities/Permission.js";
 import { In } from "typeorm";
+import { Console } from "console";
 
 
 const insertUser = (payload: UserNS.User) => {
@@ -48,6 +49,9 @@ const insertPermission = async (payload: Permission) => {
 const login = async (email: string, password: string) => {
     try {
         const user = await User.findOneBy({ email });
+        if (!user) {
+            return undefined
+        }
         const passwordMatching = await bcrypt.compare(password, user?.password || '')
         if (user && passwordMatching) {
             const token = jwt.sign({
@@ -57,12 +61,12 @@ const login = async (email: string, password: string) => {
             }, process.env.SECRET_KEY || "", {
                 expiresIn: "14d"
             })
-
             return token
         } else {
             throw ("invalid email or password")
         }
     } catch (error) {
+        console.error(error)
         throw ("invalid email or password")
     }
 }

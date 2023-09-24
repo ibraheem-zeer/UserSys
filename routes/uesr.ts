@@ -2,6 +2,7 @@ import express from 'express';
 import { insertUser, login, inssertRole, insertPermission, getRoles, getUsers, getPermission } from '../controllers/user.js';
 import { auth } from '../middleware/auth/auth.js';
 import { error } from 'console';
+import "reflect-metadata"
 
 const router = express.Router();
 
@@ -14,11 +15,11 @@ const router = express.Router();
 //     })
 // })
 
-router.post('/', (req, res) => {
+router.post('/createUser', (req, res) => {
     const { email, password, userName, displayName, role } = req.body
     if (email && password && userName && displayName && role) {
         insertUser(req.body).then(() => {
-            res.status(201).send()
+            res.status(201).json("user created successfully")
         }).catch(error => {
             console.error(error)
             res.status(500).send(error)
@@ -38,16 +39,16 @@ router.get('/', auth, (req, res, next) => {
 
 
 router.post('/permission', (req, res) => {
-    insertPermission(req.body).then((data) => {
-        res.status(201).send(data)
+    insertPermission(req.body).then(() => {
+        res.status(201).send(`Create Permission successfully`)
     }).catch(err => {
         console.error(err);
         res.status(500).send(err);
     });
 });
 
-router.get('permission', auth, (req, res, next) => {
-    getPermission().then(data => {
+router.get('/permission', auth, (req, res, next) => {
+    getPermission().then((data) => {
         res.status(200).send(data)
     }).catch(err => {
         console.error(err);
@@ -77,8 +78,8 @@ router.get('/roles', auth, async (req, res, next) => {
 })
 
 router.post('/role', (req, res) => {
-    inssertRole(req.body).then((data) => {
-        res.status(201).send(data)
+    inssertRole(req.body).then(() => {
+        res.status(201).send(`Created roles successfully`)
     }).catch(err => {
         console.error(err);
         res.status(500).send(err);

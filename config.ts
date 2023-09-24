@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-dotenv.config({
+export default dotenv.config({
     path: process.env.NODE_ENV
         ? `.env.${process.env.NODE_ENV}`
         : '.env'
